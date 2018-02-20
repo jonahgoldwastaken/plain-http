@@ -1,0 +1,19 @@
+{
+  "name": "plain-http",
+  "version": "1.0.0",
+  "description": "A plain old nodejs http server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theonejonahgold/plain-http.git"
+  },
+  "author": "Jonah Meijers <jonahmeijers97@gmail.com> (https://jonahmeijers.nl)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/theonejonahgold/plain-http/issues"
+  },
+  "homepage": "https://github.com/theonejonahgold/plain-http#readme"
+}
