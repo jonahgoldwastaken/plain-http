@@ -3,6 +3,8 @@ const fs = require('fs')
 const path = require('path')
 const mt = require('mime-types')
 
+const routeRegExp = new RegExp(/\/$/)
+
 const onnotfound = (url, res) => {
     res.statusCode = 404
     if (mt.lookup(url) == 'text/html')
@@ -14,12 +16,17 @@ const onnotfound = (url, res) => {
     else res.end()
 }
 
-const onrequest = async (req, res) => {
+const onrequest = (req, res) => {
+    if (routeRegExp.test(req.url) || !mt.lookup(req.url))
+        req.url += '/index.html'
+
     fs.readFile(path.join(__dirname, req.url), (err, buf) => {
         if (err) {
             onnotfound(req.url, res)
+            console.error(err)
             return
         }
+
         buf.toString()
         
         res.statusCode = 200
