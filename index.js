@@ -7,7 +7,7 @@ const onnotfound = (url, res) => {
     res.statusCode = 404
     if (mt.lookup(url) == 'text/html')
         fs.readFile(path.join(__dirname, '/404.html'), (err, buf) => {
-            if (err) return 404
+            if (err) throw err
             buf.toString()
             res.end(buf)
         })
