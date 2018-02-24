@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/theonejonahgold/plain-http/issues"
   },
-  "homepage": "https://github.com/theonejonahgold/plain-http#readme"
+  "homepage": "https://github.com/theonejonahgold/plain-http#readme",
+  "dependencies": {
+    "mime-types": "^2.1.18"
+  }
 }
