@@ -2,6 +2,7 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 const mt = require('mime-types')
+const sm = require('sitemap')
 
 const routeRegExp = new RegExp(/\/$/)
 
@@ -16,14 +17,50 @@ const onnotfound = (url, res) => {
     else res.end()
 }
 
+const showsitemap = (url, res) => {
+    const dir = path.dirname(url) == '//' ? '/' : path.dirname(url)
+    fs.readdir(path.join(__dirname, dir), (err, list) => {
+        if (err) {
+            res.statusCode = 500
+            res.end()
+            return
+        }
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'text/html')
+        res.end(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                <title>${dir}</title>
+            </head>
+            <body>
+                <h1>Contents inside the ${dir} folder</h1>
+                <ul>
+                    ${list.map(file => `
+                        <li>
+                            <a href="${dir != '/' ? dir + '/' : dir}${file}">${file}</a>
+                        </li>
+                    `).join('')}
+                </ul>
+            </body>
+            </html>
+        `)
+    })
+}
+
 const onrequest = (req, res) => {
     if (routeRegExp.test(req.url) || !mt.lookup(req.url))
         req.url += '/index.html'
 
     fs.readFile(path.join(__dirname, req.url), (err, buf) => {
         if (err) {
-            onnotfound(req.url, res)
-            console.error(err)
+            if (path.basename(req.url) != 'index.html')
+                onnotfound(req.url, res)
+            else
+                showsitemap(req.url, res)
             return
         }
 
