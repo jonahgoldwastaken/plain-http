@@ -7,6 +7,28 @@ const allowedMimes = ['text/html', 'text/css', 'application/javascript']
 
 const routeRegExp = new RegExp(/\/$/)
 
+const sitemap = (dir, list) => `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>${dir}</title>
+    </head>
+    <body>
+        <h1>Contents inside the ${dir} folder</h1>
+        <ul>
+            ${list.map(file => `
+                <li>
+                    <a href="${dir != '/' ? dir + '/' : dir}${file}">${file}</a>
+                </li>
+            `).join('')}
+        </ul>
+    </body>
+    </html>
+`
+
 const onnotfound = (url, res) => {
     res.statusCode = 404
     if (mt.lookup(url) == 'text/html')
@@ -28,27 +50,7 @@ const showsitemap = (url, res) => {
         }
         res.statusCode = 200
         res.setHeader('Content-Type', 'text/html')
-        res.end(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                <title>${dir}</title>
-            </head>
-            <body>
-                <h1>Contents inside the ${dir} folder</h1>
-                <ul>
-                    ${list.map(file => `
-                        <li>
-                            <a href="${dir != '/' ? dir + '/' : dir}${file}">${file}</a>
-                        </li>
-                    `).join('')}
-                </ul>
-            </body>
-            </html>
-        `)
+        res.end(sitemap(dir, list))
     })
 }
 
