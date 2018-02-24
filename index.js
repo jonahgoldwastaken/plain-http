@@ -2,7 +2,8 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 const mt = require('mime-types')
-const sm = require('sitemap')
+
+const allowedMimes = ['text/html', 'text/css', 'application/javascript']
 
 const routeRegExp = new RegExp(/\/$/)
 
@@ -54,6 +55,14 @@ const showsitemap = (url, res) => {
 const onrequest = (req, res) => {
     if (routeRegExp.test(req.url) || !mt.lookup(req.url))
         req.url += '/index.html'
+
+    console.log(req.url, mt.lookup(req.url))
+
+    if (!allowedMimes.includes(mt.lookup(req.url))) {
+        res.statusCode = 403
+        res.end()
+        return
+    }
 
     fs.readFile(path.join(__dirname, req.url), (err, buf) => {
         if (err) {
