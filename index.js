@@ -29,19 +29,16 @@ const sitemap = (dir, list) => `
     </html>
 `
 
-const onnotfound = (url, res) => {
-    res.statusCode = 404
-    if (mt.lookup(url) == 'text/html')
-        fs.readFile(path.join(__dirname, '/404.html'), (err, buf) => {
-            if (err) throw err
+const onnotfound = (url, res) =>
+    fs.readFile(path.join(__dirname, '/404.html'), (err, buf) => {
+        if (err) throw err
 
-            buf.toString()
+        buf.toString()
 
-            res.setHeader('Content-Type', 'text/html')
-            res.end(buf)
-        })
-    else res.end()
-}
+        res.statusCode = 404
+        res.setHeader('Content-Type', 'text/html')
+        res.end(buf)
+    })
 
 const showsitemap = (url, res) => {
     const dir = path.dirname(url) == '//' ? '/' : path.dirname(url)
