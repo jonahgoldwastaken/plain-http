@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const mt = require('mime-types')
 
-const allowedMimes = ['text/html', 'text/css', 'application/javascript']
+const allowedMimes = ['text/html', 'text/css', 'application/javascript', 'image/x-icon', 'image/jpeg', 'image/png']
 
 const routeRegExp = new RegExp(/\/$/)
 
