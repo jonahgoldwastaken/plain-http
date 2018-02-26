@@ -44,8 +44,7 @@ const showsitemap = (url, res) => {
     const dir = path.dirname(url) == '//' ? '/' : path.dirname(url)
     fs.readdir(path.join(__dirname, dir), (err, list) => {
         if (err) {
-            res.statusCode = 500
-            res.end()
+            onnotfound(url, res)
             return
         }
         res.statusCode = 200
@@ -57,8 +56,6 @@ const showsitemap = (url, res) => {
 const onrequest = (req, res) => {
     if (routeRegExp.test(req.url) || !mt.lookup(req.url))
         req.url += '/index.html'
-
-    console.log(req.url, mt.lookup(req.url))
 
     if (!allowedMimes.includes(mt.lookup(req.url))) {
         res.statusCode = 403
