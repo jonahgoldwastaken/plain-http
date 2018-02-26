@@ -34,7 +34,10 @@ const onnotfound = (url, res) => {
     if (mt.lookup(url) == 'text/html')
         fs.readFile(path.join(__dirname, '/404.html'), (err, buf) => {
             if (err) throw err
+
             buf.toString()
+
+            res.setHeader('Content-Type', 'text/html')
             res.end(buf)
         })
     else res.end()
@@ -47,6 +50,7 @@ const showsitemap = (url, res) => {
             onnotfound(url, res)
             return
         }
+        
         res.statusCode = 200
         res.setHeader('Content-Type', 'text/html')
         res.end(sitemap(dir, list))
