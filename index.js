@@ -1,8 +1,9 @@
 const http = require('http')
 const fs = require('fs')
 const path = require('path')
-const mt = require('mime-types')
+const mimeTypes = require('mime-types')
 
+// Mimes for files that are allowed to be opened from the sitemap view
 const allowedMimes = ['text/html', 'text/css', 'application/javascript', 'image/x-icon', 'image/jpeg', 'image/png']
 
 const routeRegExp = new RegExp(/\/$/)
@@ -33,8 +34,6 @@ const onnotfound = (url, res) =>
     fs.readFile(path.join(__dirname, '/404.html'), (err, buf) => {
         if (err) throw err
 
-        buf.toString()
-
         res.statusCode = 404
         res.setHeader('Content-Type', 'text/html')
         res.end(buf)
@@ -55,10 +54,12 @@ const showsitemap = (url, res) => {
 }
 
 const onrequest = (req, res) => {
-    if (routeRegExp.test(req.url) || !mt.lookup(req.url))
+    if (routeRegExp.test(req.url) || !mimeTypes.lookup(req.url))
         req.url += '/index.html'
 
-    if (!allowedMimes.includes(mt.lookup(req.url))) {
+    res.mimeType = mimeTypes.lookup(req.url)
+
+    if (!allowedMimes.includes(res.mimeType)) {
         res.statusCode = 403
         res.end()
         return
@@ -72,11 +73,9 @@ const onrequest = (req, res) => {
                 showsitemap(req.url, res)
             return
         }
-
-        buf.toString()
         
         res.statusCode = 200
-        res.setHeader('Content-Type', mt.lookup(req.url))
+        res.setHeader('Content-Type', res.mimeType)
         res.end(buf)
     })
 }
